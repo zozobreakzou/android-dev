@@ -1,0 +1,16 @@
+﻿左侧文件：C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\Microsoft\MDD\Android\V150\Android.Common - 副本.targets
+右侧文件：C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\Microsoft\MDD\Android\V150\Android.Common.targets
+473c473
+<       <AssembleParameter>assemble$(GradlePlatform)$(Configuration)</AssembleParameter>
+---
+>       <AssembleParameter>assemble$(Configuration)</AssembleParameter>
+482a483
+>     <Message Text="GradlePackage.ToolName = %(GradlePackage.ToolName) $(GradleParameters)" Importance="high" />
+487,488c488,489
+<       <GradleOutputDir Condition="'$(GradleOutputDir)' == '' and '$(TargetExt)' == '.apk'">$(GradleProjectDirectory)\build\outputs\apk\</GradleOutputDir>
+<       <GradleOutputDir Condition="'$(GradleOutputDir)' == '' and '$(TargetExt)' == '.aar'">$(GradleProjectDirectory)\build\outputs\aar\</GradleOutputDir>
+---
+>       <GradleOutputDir Condition="'$(GradleOutputDir)' == '' and '$(TargetExt)' == '.apk'">$(GradleProjectDirectory)\build\outputs\apk\$(Configuration)\</GradleOutputDir>
+>       <GradleOutputDir Condition="'$(GradleOutputDir)' == '' and '$(TargetExt)' == '.aar'">$(GradleProjectDirectory)\build\outputs\aar\$(Configuration)\</GradleOutputDir>
+493a495
+>       <GradleApkFileName Condition="'$(Configuration)' == 'Debug'">app-debug.apk</GradleApkFileName>

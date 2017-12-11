@@ -1,0 +1,95 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config_zozobreak {
+            keyAlias 'keyzozo'
+            keyPassword 'zozobreak'
+            storeFile file('C:/Users/zozobreak/zozobreak.jks')
+            storePassword 'zozobreak'
+        }
+    }
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId = 'com.example.debugtest'
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode = 1
+        versionName = '1.0'
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+        signingConfig signingConfigs.config_zozobreak
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+    sourceSets {
+        main {
+            //jni.srcDirs = ['g:/code/git/mgv-ng-4.1/debugtest']
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+}
+
+task buildDebugCLib(type:Exec) {
+
+    group 'build'
+
+    description 'build jni libs'
+
+    workingDir 'g:/code/git/mgv-ng-4.1'
+
+    commandLine 'cmd', '/c', 'g:/code/git/mgv-ng-4.1/builddebugtest.bat Debug'
+
+    //store the output instead of printing to the console:
+    standardOutput = new ByteArrayOutputStream()
+
+    //extension method buildCLib.output() can be used to obtain the output:
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
+
+
+task buildReleaseCLib(type:Exec) {
+    group 'build'
+    description 'build jni libs'
+    workingDir 'g:/code/git/mgv-ng-4.1'
+    commandLine 'cmd', '/c', 'g:/code/git/mgv-ng-4.1/builddebugtest.bat Release'
+}
+
+/*
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleDebug') {
+        task.mustRunAfter buildCLib
+        task.dependsOn(buildCLib)
+    }
+}
+*/
+
+afterEvaluate {
+    assembleDebug.dependsOn(buildDebugCLib)
+    assembleRelease.dependsOn(buildReleaseCLib)
+}
